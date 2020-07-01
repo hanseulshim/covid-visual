@@ -1,6 +1,7 @@
 const tableNames = require('../../src/constants/tableNames')
 const api = require('../../src/constants/api')
 const states = require('../../src/constants/states')
+const stateWeek = require('../sources/stateWeek.json')
 const tableUtils = require('../../src/lib/tableUtils')
 const axios = require('axios')
 
@@ -21,9 +22,13 @@ exports.seed = async (knex) => {
 			stateData.data,
 			stateDbArr
 		)
+		const stateWeekList = tableUtils.cleanStateWeekData(stateWeek, stateDbArr)
 		await Promise.all([
 			knex(tableNames.country_day).insert(countryList),
-			...stateChunkList.map((chunk) => knex(tableNames.state_day).insert(chunk))
+			...stateChunkList.map((chunk) =>
+				knex(tableNames.state_day).insert(chunk)
+			),
+			knex(tableNames.state_week).insert(stateWeekList)
 		])
 	} catch (error) {
 		console.error(error)

@@ -61,7 +61,30 @@ const cleanStateDayData = (stateArr, stateDbArr) => {
 	)
 }
 
+const cleanStateWeekData = (stateArr, stateDbArr) => {
+	if (stateArr.length === 0) {
+		throw new Error('No state list found.')
+	}
+	const validStateCodes = stateDbArr.map((s) => s.code)
+	return stateArr
+		.filter((state) => validStateCodes.includes(state.DEPARTMENTSTATE))
+		.map((state) => {
+			const foundState = stateDbArr.find(
+				(s) => s.code === state.DEPARTMENTSTATE
+			)
+			return {
+				state_id: foundState.id,
+				date: state.WEEKDATE,
+				state: foundState.code,
+				visit_count: state.VISITCNT,
+				ili_visit_count: state.ILIVISITCNT,
+				ili_visit_percent: state.ILIVISITPCT
+			}
+		})
+}
+
 module.exports = {
 	cleanCountryData,
-	cleanStateDayData
+	cleanStateDayData,
+	cleanStateWeekData
 }

@@ -27,7 +27,7 @@ exports.up = async (knex) => {
 			table.string('state').notNullable()
 			table.integer('visit_count').notNullable()
 			table.integer('ili_visit_count').notNullable()
-			table.integer('ili_visit_percent').notNullable()
+			table.decimal('ili_visit_percent', 11, 9).notNullable()
 		}),
 		knex.schema.createTable(tableNames.state_day, (table) => {
 			table.increments().notNullable()
