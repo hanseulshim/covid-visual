@@ -5,6 +5,9 @@ const stateWeek = require('../sources/stateWeek.json')
 const tableUtils = require('../../src/lib/tableUtils')
 const axios = require('axios')
 
+/**
+ * @param {Knex} knex
+ */
 exports.seed = async (knex) => {
 	try {
 		await Promise.all(
