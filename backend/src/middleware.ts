@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
+import { errorMessage } from './constants/project'
 
 export const notFound = (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ): void => {
-	const error = new Error(`Not found - ${req.originalUrl}`)
+	const error = new Error(`${errorMessage}${req.originalUrl}`)
 	res.status(404)
 	next(error)
 }
@@ -13,7 +14,9 @@ export const notFound = (
 export const errorHandler = (
 	error: Error,
 	req: Request,
-	res: Response
+	res: Response,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	next: NextFunction
 ): void => {
 	const statusCode = res.statusCode === 200 ? 500 : res.statusCode
 	res.status(statusCode)
