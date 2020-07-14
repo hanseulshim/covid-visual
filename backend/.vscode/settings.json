@@ -1,6 +1,20 @@
 {
-  "cSpell.ignoreWords": [
-    "papaparse",
-    "yyyymmdd"
-  ]
+	"cSpell.ignoreWords": [],
+	"cSpell.words": [
+		"knexfile",
+		"cdrdc",
+		"departmentstate",
+		"downlevel",
+		"esnext",
+		"ilivisitcnt",
+		"ilivisitpct",
+		"papaparse",
+		"plpgsql",
+		"tslib",
+		"typechecking",
+		"visi",
+		"visitcnt",
+		"weekdate",
+		"yyyymmdd"
+	]
 }
