@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express'
 import morgan from 'morgan'
 import compression from 'compression'
 import helmet from 'helmet'
+import { message } from './constants/project'
 
 import { notFound, errorHandler } from './middleware'
 
@@ -13,7 +14,9 @@ app.use(helmet())
 app.use(express.json())
 
 app.get('/', (req: Request, res: Response) => {
-	res.send('Hello')
+	res.json({
+		message
+	})
 })
 
 app.use(notFound)
