@@ -54,6 +54,13 @@ export async function up(knex: Knex): Promise<void> {
 			table.integer('positive_cases_viral')
 			table.integer('total_test_results')
 			table.string('data_quality_grade')
+			table.boolean('ili_symptoms')
+			table.boolean('positive_cases')
+			table.boolean('documented_cases')
+			table.boolean('positive_cases_percent')
+			table.boolean('hospital_availability')
+			table.boolean('healthcare_availability')
+			table.integer('risk_score')
 			table.string('fips').notNullable()
 		}),
 		knex.schema.createTable(tableNames.country_day, (table) => {

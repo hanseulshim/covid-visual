@@ -1,5 +1,4 @@
 import chunk from 'lodash.chunk'
-import moment from 'moment'
 
 interface Country {
 	date: string
@@ -88,7 +87,7 @@ const cleanStateDayData = (
 				if (!foundState) throw new Error('State id not found')
 				return {
 					state_id: foundState.id,
-					date: moment(state.date).format('YYYYMMDD'),
+					date: state.date,
 					state: state.state,
 					positive: state.positive,
 					negative: state.negative,
