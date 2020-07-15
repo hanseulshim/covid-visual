@@ -8,7 +8,7 @@
 		"migrate": "knex migrate:latest --knexfile knexfile.ts",
 		"rollback": "knex migrate:rollback --knexfile knexfile.ts",
 		"seed:make": "knex seed:make --knexfile knexfile.ts -x ts",
-		"seed": "knex seed:run --knexfile knexfile.ts",
+		"seed": "knex seed:run --knexfile knexfile.ts --specific=initial.ts",
 		"start": "node dist/index.js",
 		"dev": "nodemon src/index.ts",
 		"build": "tsc -p .",
@@ -27,6 +27,7 @@
 		"lodash.chunk": "^4.2.0",
 		"moment": "^2.27.0",
 		"morgan": "^1.10.0",
+		"objection": "^2.2.1",
 		"papaparse": "^5.2.0",
 		"pg": "^8.2.1"
 	},
