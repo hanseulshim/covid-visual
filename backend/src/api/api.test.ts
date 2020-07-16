@@ -1,0 +1,26 @@
+import supertest from 'supertest'
+
+import app from '../app'
+import { message, errorMessage } from '../constants/project'
+
+describe('GET /api', () => {
+	it('should respond with a message', async () => {
+		const response = await supertest(app)
+			.get('/api')
+			.expect('Content-Type', /json/)
+			.expect(200)
+
+		expect(response.body.message).toEqual(message)
+	})
+})
+
+describe('GET /api/invalid', () => {
+	it('should respond with a not found message', async () => {
+		const response = await supertest(app)
+			.get('/api/invalid')
+			.expect('Content-Type', /json/)
+			.expect(404)
+
+		expect(response.body.message).toEqual(`${errorMessage}/api/invalid`)
+	})
+})

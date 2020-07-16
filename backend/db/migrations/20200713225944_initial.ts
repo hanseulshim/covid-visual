@@ -68,6 +68,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.date('date').notNullable()
 			table.integer('states').notNullable()
 			table.integer('positive')
+			table.integer('positive_day')
 			table.integer('negative')
 			table.integer('pending')
 			table.integer('hospitalized_currently')
@@ -152,6 +153,7 @@ export async function up(knex: Knex): Promise<void> {
 					hospital_availability_val INT;
 					healthcare_availability_val INT;
 					risk_score_calc INT;
+					positive_cases_day DECIMAL := 0;
 					l_start_time timestamp = CLOCK_TIMESTAMP();
 				BEGIN
 					FOR cdr in SELECT * FROM country_day_risk_calc WHERE risk_score IS NULL LOOP
@@ -212,8 +214,13 @@ export async function up(knex: Knex): Promise<void> {
 						IF healthcare_availability_val <= 0 THEN
 							risk_score_calc := risk_score_calc + 1;
 						END IF;
+						
+						SELECT cdrc.positive_cases INTO positive_cases_day
+						FROM country_day_risk_calc AS cdrc
+						WHERE cdrc.date = cdr.date;
 				
 						UPDATE country_day AS cd SET
+							positive_day = positive_cases_day,
 							risk_score = risk_score_calc,
 							ili_symptoms = CASE WHEN ili_symptoms_val >= 0 THEN FALSE ELSE TRUE END,
 							positive_cases = CASE WHEN positive_cases_val >= 0 THEN FALSE ELSE TRUE END,

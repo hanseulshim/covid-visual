@@ -3,6 +3,7 @@ import morgan from 'morgan'
 import compression from 'compression'
 import helmet from 'helmet'
 import { message } from './constants/project'
+import api from './api'
 
 import { notFound, errorHandler } from './middleware'
 
@@ -18,6 +19,8 @@ app.get('/', (req: Request, res: Response) => {
 		message
 	})
 })
+
+app.use('/api', api)
 
 app.use(notFound)
 app.use(errorHandler)
