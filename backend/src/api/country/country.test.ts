@@ -30,15 +30,11 @@ describe('GET /api/country', () => {
 		expect(response.body.relativeMax).toHaveProperty('positiveDay')
 		expect(typeof response.body.relativeMax.positiveDay).toBe('number')
 	})
-	it('should return absolute max', async () => {
+	it('should only have three properties', async () => {
 		const response = await supertest(app)
 			.get('/api/country')
 			.expect('Content-Type', /json/)
 			.expect(200)
-		expect(response.body).toHaveProperty('absoluteMax')
-		expect(response.body.absoluteMax).toHaveProperty('date')
-		expect(typeof response.body.absoluteMax.date).toBe('string')
-		expect(response.body.absoluteMax).toHaveProperty('positiveDay')
-		expect(typeof response.body.absoluteMax.positiveDay).toBe('number')
+		expect(Object.keys(response.body).length).toEqual(3)
 	})
 })
