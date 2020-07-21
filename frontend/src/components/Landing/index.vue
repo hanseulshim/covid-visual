@@ -1,35 +1,46 @@
 <template>
-	<div class="container">
-		<div>Powered by</div>
-		<img alt="boost logo" src="../../assets/logo.png" />
-		<div class="title">COVID State of States</div>
-		<div class="description">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Risus condimentum
-			nisl quam ac enim. Tempus nunc odio at consectetur ornare. Odio morbi et
-			turpis convallis augue pellentesque lorem. Varius convallis aenean aliquam
-			commodo, neque justo.
+	<div v-scroll="handleScroll">
+		<div class="container">
+			<div>Powered by</div>
+			<img alt="boost logo" src="../../assets/logo.png" />
+			<div class="title">COVID State of States</div>
+			<div class="description">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Risus
+				condimentum nisl quam ac enim. Tempus nunc odio at consectetur ornare.
+				Odio morbi et turpis convallis augue pellentesque lorem. Varius
+				convallis aenean aliquam commodo, neque justo.
+			</div>
+			<div class="risk">RISK LEVEL</div>
+			<div class="bar" />
+			<div class="label-container">
+				<div>1</div>
+				<div>2</div>
+				<div>3</div>
+				<div>4</div>
+				<div>5</div>
+				<div>6</div>
+			</div>
+			<HistoricalChart />
 		</div>
-		<div class="risk">RISK LEVEL</div>
-		<div class="bar" />
-		<div class="label-container">
-			<div>1</div>
-			<div>2</div>
-			<div>3</div>
-			<div>4</div>
-			<div>5</div>
-			<div>6</div>
-		</div>
-		<LandingChart />
+		<div id="spacer" />
 	</div>
 </template>
 
 <script>
-import LandingChart from './LandingChart'
+import HistoricalChart from './HistoricalChart'
 
 export default {
 	name: 'Landing',
 	components: {
-		LandingChart
+		HistoricalChart
+	},
+	methods: {
+		handleScroll: function() {
+			if (window.scrollY > 0 && this.$route.name === 'landing') {
+				this.$router.push('detail')
+			}
+			return window.scrollY > 0
+		}
 	}
 }
 </script>
@@ -74,5 +85,8 @@ export default {
 		display: flex;
 		justify-content: space-between;
 	}
+}
+#spacer {
+	height: 1px;
 }
 </style>
