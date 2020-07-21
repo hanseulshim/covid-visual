@@ -3,8 +3,18 @@
 </template>
 
 <script>
+import { getCountryData } from '../../../api'
 export default {
-	name: 'HistoricalChart'
+	name: 'HistoricalChart',
+	data: function() {
+		return {
+			countryList: []
+		}
+	},
+	async mounted() {
+		const data = await getCountryData()
+		this.countryList = data.countryList
+	}
 }
 </script>
 

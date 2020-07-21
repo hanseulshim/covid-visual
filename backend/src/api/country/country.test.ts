@@ -27,8 +27,10 @@ describe('GET /api/country', () => {
 		expect(response.body).toHaveProperty('relativeMax')
 		expect(response.body.relativeMax).toHaveProperty('date')
 		expect(typeof response.body.relativeMax.date).toBe('string')
-		expect(response.body.relativeMax).toHaveProperty('positiveDay')
-		expect(typeof response.body.relativeMax.positiveDay).toBe('number')
+		expect(response.body.relativeMax).toHaveProperty('positiveCases')
+		expect(typeof response.body.relativeMax.positiveCases).toBe('number')
+		expect(response.body.relativeMax).toHaveProperty('riskScore')
+		expect(typeof response.body.relativeMax.riskScore).toBe('number')
 	})
 	it('should only have three properties', async () => {
 		const response = await supertest(app)

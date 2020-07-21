@@ -8,19 +8,19 @@ router.get(
 	async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		try {
 			const countryList = await Country.query()
-				.select('date', 'positiveDay')
+				.select('date', 'positiveDay as positiveCases', 'riskScore')
 				.orderBy('date', 'DESC')
 			const recentDay = countryList[0]
 			const relativeMax = await Country.query()
-				.select('date', 'positiveDay')
+				.select('date', 'positiveDay as positiveCases', 'riskScore')
 				.where(
 					'positiveDay',
 					Country.query().max('positiveDay').where('date', '<', '2020-06-01')
 				)
 				.first()
 			const percentDifference =
-				(recentDay.positiveDay - relativeMax.positiveDay) /
-				relativeMax.positiveDay
+				(recentDay.positiveCases - relativeMax.positiveCases) /
+				relativeMax.positiveCases
 			res.json({
 				relativeMax,
 				percentDifference,

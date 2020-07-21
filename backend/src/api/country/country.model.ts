@@ -4,7 +4,7 @@ Model.knex(connection)
 
 class Country extends Model {
 	date!: Date
-	positiveDay!: number
+	positiveCases!: number
 
 	static get tableName(): string {
 		return 'countryDay'
