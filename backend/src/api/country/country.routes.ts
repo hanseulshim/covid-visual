@@ -9,8 +9,9 @@ router.get(
 		try {
 			const countryList = await Country.query()
 				.select('date', 'positiveDay as positiveCases', 'riskScore')
-				.orderBy('date', 'DESC')
-			const recentDay = countryList[0]
+				.whereNotNull('positiveCases')
+				.orderBy('date')
+			const recentDay = countryList[countryList.length - 1]
 			const relativeMax = await Country.query()
 				.select('date', 'positiveDay as positiveCases', 'riskScore')
 				.where(

@@ -1,10 +1,10 @@
 <template>
-	<div>United States</div>
+  <div>United States</div>
 </template>
 
 <script>
 export default {
-	name: 'HistoricalChartMini'
+  name: 'HistoricalChartMini'
 }
 </script>
 
