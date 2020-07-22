@@ -1,15 +1,17 @@
 <template>
-  <div class="main">Threat Level</div>
+  <div class="main">
+    <p>Risk Trends</p>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'ThreatLevel'
+  name: 'RiskTrends'
 }
 </script>
 
 <style lang="scss" scoped>
 .main {
-  padding: 2rem 0 2rem 10rem;
+  flex: 1;
 }
 </style>

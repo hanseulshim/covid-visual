@@ -9,24 +9,24 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 
 const router = new VueRouter({
-	routes: [
-		{ path: '/', component: Landing, name: 'landing' },
-		{ path: '/detail', component: Detail, name: 'detail' }
-	]
+  routes: [
+    { path: '/', component: Landing, name: 'landing' },
+    { path: '/detail', component: Detail, name: 'detail' }
+  ]
 })
 
 Vue.directive('scroll', {
-	inserted: (el, binding) => {
-		const f = (evt) => {
-			if (binding.value(evt, el)) {
-				window.removeEventListener('scroll', f)
-			}
-		}
-		window.addEventListener('scroll', f)
-	}
+  inserted: (el, binding) => {
+    const f = evt => {
+      if (binding.value(evt, el)) {
+        window.removeEventListener('scroll', f)
+      }
+    }
+    window.addEventListener('scroll', f)
+  }
 })
 
 new Vue({
-	render: (h) => h(App),
-	router
+  render: h => h(App),
+  router
 }).$mount('#app')
