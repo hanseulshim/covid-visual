@@ -1,17 +1,17 @@
 <template>
   <div class="main">
-    <RiskTrends />
+    <Trends />
     <Map />
   </div>
 </template>
 
 <script>
-import RiskTrends from './RiskTrends'
+import Trends from './Trends'
 import Map from './Map'
 export default {
   name: 'ThreatLevel',
   components: {
-    RiskTrends,
+    Trends,
     Map
   }
 }

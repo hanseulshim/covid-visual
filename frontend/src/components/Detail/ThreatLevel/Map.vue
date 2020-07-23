@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="container">
     <svg class="map" />
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
   methods: {
     renderChart() {
       // Le Chart
-      const width = 900
+      const width = 800
       const height = 500
       let centered
 
@@ -106,6 +106,7 @@ export default {
             .on('click', clicked)
 
           g.append('path')
+            .datum(data)
             .attr('id', 'state-borders')
             .attr('d', path)
 
@@ -137,7 +138,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main {
+.container {
   flex: 1;
 }
 </style>
@@ -148,15 +149,15 @@ export default {
 }
 
 #states .active {
-  stroke: #ededed;
-  stroke-width: 1px;
-  transition: 3s;
+  stroke: #fff;
+  stroke-width: 3px;
+  transition: 1s;
 }
 
 #state-borders {
   fill: none;
-  stroke: #fff;
-  stroke-width: 1.5px;
+  stroke: #ededed;
+  stroke-width: 1px;
   stroke-linejoin: round;
   stroke-linecap: round;
   pointer-events: none;
