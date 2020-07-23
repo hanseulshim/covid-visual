@@ -27,7 +27,8 @@ export default {
     Footer
   },
   mounted() {
-    window.moveTo(0, 10)
+    console.log('sodifjsdf')
+    window.moveBy(0, 10)
   },
   methods: {
     handleScroll() {
@@ -55,6 +56,6 @@ export default {
   }
 }
 #spacer {
-  height: 1px;
+  height: 10px;
 }
 </style>
