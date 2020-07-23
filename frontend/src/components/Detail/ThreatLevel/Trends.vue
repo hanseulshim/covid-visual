@@ -102,10 +102,27 @@ export default {
             .datum(arr)
             .attr('fill', 'none')
             .attr('stroke', 'black')
-            .attr('stroke-width', 1)
+            .attr('stroke-width', 2)
             .attr('stroke-linejoin', 'round')
             .attr('stroke-linecap', 'round')
             .attr('d', line)
+
+          // Define the area and append it
+          const area = d3
+            .area()
+            .x(function(d) {
+              return x(d.date)
+            })
+            .y0(height)
+            .y1(function(d) {
+              return y(d.value)
+            })
+            .curve(d3.curveMonotoneX)
+          svg
+            .append('path')
+            .data([arr])
+            .attr('fill', !threat.improving ? '#666' : 'none')
+            .attr('d', area)
 
           // Close shape on right side
           svg
@@ -174,7 +191,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  flex: 1;
+  flex: 3;
   display: flex;
   flex-direction: column;
 }
@@ -247,13 +264,5 @@ export default {
       align-items: center;
     }
   }
-}
-
-.white-font {
-  color: white;
-}
-
-.grey-font {
-  color: #ededed;
 }
 </style>

@@ -139,7 +139,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  flex: 1;
+  flex: 2;
 }
 </style>
 <style lang="scss">
