@@ -185,7 +185,7 @@ export const threats = [
     ]
   },
   {
-    threatTitle: 'Hospitals are reating all patients without crisis care',
+    threatTitle: 'Hospitals are treating all patients without crisis care',
     improving: false,
     data: [],
     isTrue: false
