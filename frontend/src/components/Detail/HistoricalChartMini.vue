@@ -1,6 +1,11 @@
 <template>
   <div class="main">
+    <div class="country">United States</div>
     <div class="tooltip">
+      <div class="tooltip-row">
+        <div class="title">Date</div>
+        <div class="label date" />
+      </div>
       <div class="tooltip-row">
         <div class="title">Cases</div>
         <div class="label cases" />
@@ -129,7 +134,7 @@ export default {
         .attr('fill', d => getRiskBackground(d.riskScore))
     },
     changeDate() {
-      console.log(this.currentDay)
+      this.$emit('selectedDate', this.currentDay.date)
     },
     mouseover(d) {
       d3.select('.tooltip')
@@ -141,13 +146,14 @@ export default {
         'background',
         getRiskBackground(d.riskScore)
       )
+      d3.select('.date').text(moment(d.date, 'MM-DD-YYYY').format('MMMM Do'))
       d3.select('.cases').text(d.positiveCases.toLocaleString())
       d3.select('.risk-level').text(d.riskScore)
     },
     mousemove(d) {
       d3.select('.tooltip')
         .style('left', this.xScale(d.date) - 62 + 'px')
-        .style('top', this.yScale(d.positiveCases) - 20 + 'px')
+        .style('top', this.yScale(d.positiveCases) - 35 + 'px')
     },
     setTooltip(d) {
       this.mouseover(d)
@@ -172,11 +178,19 @@ export default {
   align-items: center;
   width: 100%;
 
+  .country {
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+
   .slider {
     position: absolute;
     -webkit-appearance: none;
     appearance: none;
-    width: 100%;
+    width: calc(100% + 10px);
     height: 10px;
     border-radius: 15px;
     outline: none;
