@@ -27,7 +27,8 @@ export default {
     Footer
   },
   mounted() {
-    window.moveTo(0, 10)
+    console.log('sodifjsdf')
+    window.moveBy(0, 10)
   },
   methods: {
     handleScroll() {
@@ -44,8 +45,9 @@ export default {
 .container {
   height: 100vh;
   .header {
+    height: 150px;
     display: flex;
-    padding: 2rem 10rem;
+    padding: 1rem 10rem;
     box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.1);
     .logo-container {
       padding-right: 2rem;
@@ -55,6 +57,6 @@ export default {
   }
 }
 #spacer {
-  height: 1px;
+  height: 10px;
 }
 </style>
