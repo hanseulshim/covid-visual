@@ -12,6 +12,14 @@
       <div class="tooltip-arrow" />
     </div>
     <svg class="chart" />
+    <input
+      type="range"
+      min="0"
+      :max="countryList.length - 1"
+      v-model="index"
+      class="slider"
+      @change="changeDate"
+    />
   </div>
 </template>
 
@@ -26,7 +34,9 @@ export default {
     return {
       countryList: [],
       percentDifference: 0,
-      relativeMin: {}
+      relativeMin: {},
+      index: 0,
+      marginBottom: 90
     }
   },
   async mounted() {
@@ -34,62 +44,58 @@ export default {
     this.countryList = data.countryList
     this.percentDifference = data.percentDifference
     this.relativeMin = data.relativeMin
+    this.index = data.countryList.length - 1
     this.renderChart()
+  },
+  computed: {
+    currentDay() {
+      return this.countryList[this.index]
+    },
+    width() {
+      return d3
+        .select('.chart')
+        .node()
+        .getBoundingClientRect().width
+    },
+    height() {
+      return (
+        d3
+          .select('.chart')
+          .node()
+          .getBoundingClientRect().height - this.marginBottom
+      )
+    },
+    xScale() {
+      return d3
+        .scaleBand()
+        .domain(this.countryList.map(d => d.date))
+        .range([0, this.width])
+    },
+    yScale() {
+      return d3
+        .scaleLinear()
+        .domain([0, d3.max(this.countryList, d => d.positiveCases)])
+        .range([this.height, 0])
+    }
   },
   methods: {
     renderChart() {
       const svg = d3.select('.chart')
-      // const marginTop = 30
-      const marginBottom = 75
-      const width = svg.node().getBoundingClientRect().width
-      const height = svg.node().getBoundingClientRect().height - marginBottom
       const data = this.countryList
       const recentDay = data[data.length - 1]
 
-      const xScale = d3
-        .scaleBand()
-        .domain(data.map(d => d.date))
-        .range([0, width])
+      this.setTooltip(recentDay)
 
-      const yScale = d3
-        .scaleLinear()
-        .domain([0, d3.max(data, d => d.positiveCases)])
-        .range([height, 0])
-
-      const mouseover = d => {
-        d3.select('.tooltip')
-          .transition()
-          .duration(200)
-          .style('opacity', 1)
-          .style('background', getRiskBackground(d.riskScore))
-        d3.select('.tooltip-arrow').style(
-          'background',
-          getRiskBackground(d.riskScore)
-        )
-        d3.select('.cases').text(d.positiveCases.toLocaleString())
-        d3.select('.risk-level').text(d.riskScore)
-      }
-
-      const mousemove = d => {
-        d3.select('.tooltip')
-          .style('left', xScale(d.date) - 62 + 'px')
-          .style('top', yScale(d.positiveCases) - 20 + 'px')
-      }
-
-      const resetTooltip = () => {
-        mouseover(recentDay)
-        mousemove(recentDay)
-      }
-
-      resetTooltip()
+      // SLIDER
+      d3.select('.slider').style('top', this.height + 52 + 'px')
 
       // AXIS LINE
       svg
         .append('g')
-        .attr('transform', `translate(0, ${height + 50})`)
+        .attr('transform', `translate(0, ${this.height + 73})`)
         .call(
           d3
-            .axisBottom(xScale)
+            .axisBottom(this.xScale)
             .tickValues([
               ...new Set(
                 data
@@ -115,17 +121,42 @@ export default {
         .data(data)
         .enter()
         .append('rect')
-        .attr('x', d => xScale(d.date))
-        .attr('y', d => yScale(d.positiveCases))
-        .attr('width', width / data.length)
-        .attr('height', d => height - yScale(d.positiveCases))
+        .attr('x', d => this.xScale(d.date))
+        .attr('y', d => this.yScale(d.positiveCases))
+        .attr('width', this.width / data.length)
+        .attr('height', d => this.height - this.yScale(d.positiveCases))
         .attr('stroke', '#FFF')
         .attr('fill', d => getRiskBackground(d.riskScore))
-        .on('mouseover', mouseover)
-        .on('mouseout', () => {
-          resetTooltip()
-        })
-        .on('mousemove', mousemove)
+    },
+    changeDate() {
+      console.log(this.currentDay)
+    },
+    mouseover(d) {
+      d3.select('.tooltip')
+        .transition()
+        .duration(200)
+        .style('opacity', 1)
+        .style('background', getRiskBackground(d.riskScore))
+      d3.select('.tooltip-arrow').style(
+        'background',
+        getRiskBackground(d.riskScore)
+      )
+      d3.select('.cases').text(d.positiveCases.toLocaleString())
+      d3.select('.risk-level').text(d.riskScore)
+    },
+    mousemove(d) {
+      d3.select('.tooltip')
+        .style('left', this.xScale(d.date) - 62 + 'px')
+        .style('top', this.yScale(d.positiveCases) - 20 + 'px')
+    },
+    setTooltip(d) {
+      this.mouseover(d)
+      this.mousemove(d)
+    }
+  },
+  watch: {
+    index() {
+      this.setTooltip(this.countryList[this.index])
     }
   }
 }
@@ -140,6 +171,38 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 100%;
+
+  .slider {
+    position: absolute;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 15px;
+    outline: none;
+    background: #eeeeee;
+    border: 1px solid #aaaaaa;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #666666;
+      cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #666666;
+      cursor: pointer;
+    }
+  }
 
   .next-icon {
     width: 50px;

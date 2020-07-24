@@ -27,7 +27,6 @@ export default {
     Footer
   },
   mounted() {
-    console.log('sodifjsdf')
     window.moveBy(0, 10)
   },
   methods: {
