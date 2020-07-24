@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="map-container">
     <svg class="map" />
   </div>
 </template>
@@ -19,7 +19,6 @@ export default {
       // Le Chart
       const width = 750
       const height = 500
-      let centered
 
       // Size our SVG
       const svg = d3
@@ -27,13 +26,17 @@ export default {
         .attr('width', width)
         .attr('height', height)
 
+      const tooltip = d3
+        .select('.map-container')
+        .append('div')
+        .attr('class', 'hidden tooltip')
+
       // Add background and add click handler to zoom out
       svg
         .append('rect')
         .attr('class', 'map-background')
         .attr('width', width)
         .attr('height', height)
-        .on('click', clicked)
 
       // Append group element
       const g = svg.append('g')
@@ -47,50 +50,6 @@ export default {
       // Path generator for our USA projection. Make GeoJSON coords into paths in SVG
       const path = d3.geoPath().projection(projection)
 
-      // Click handler. Zoom on a state if one is selected, if not zoom out
-      const clicked = d => {
-        let x, y, k
-
-        if (d && centered !== d) {
-          var centroid = path.centroid(d)
-          x = centroid[0]
-          y = centroid[1]
-          k = 4
-          centered = d
-        } else {
-          x = width / 2
-          y = height / 2
-          k = 1
-          centered = null
-        }
-
-        g.selectAll('path').classed(
-          'active',
-          centered &&
-            function(d) {
-              return d === centered
-            }
-        )
-
-        g.transition()
-          .duration(750)
-          .attr(
-            'transform',
-            'translate(' +
-              width / 2 +
-              ',' +
-              height / 2 +
-              ')scale(' +
-              k +
-              ')translate(' +
-              -x +
-              ',' +
-              -y +
-              ')'
-          )
-          .style('stroke-width', 1.5 / k + 'px')
-      }
-
       // Get the GeoJSON from this random source, map the GeoJSON to svg paths
       d3.json(
         'https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json'
@@ -103,7 +62,26 @@ export default {
             .enter()
             .append('path')
             .attr('d', path)
-            .on('click', clicked)
+            .on('mousemove', function(d) {
+              var mouse = d3.mouse(svg.node()).map(function(d) {
+                return parseInt(d)
+              })
+
+              tooltip
+                .classed('hidden', false)
+                .attr(
+                  'style',
+                  'left:' +
+                    (mouse[0] + 15) +
+                    'px; top:' +
+                    (mouse[1] - 35) +
+                    'px'
+                )
+                .html(d.properties.name)
+            })
+            .on('mouseout', function() {
+              tooltip.classed('hidden', true)
+            })
 
           g.append('path')
             .datum(data)
@@ -138,11 +116,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
+.map-container {
   flex: 1;
+  position: relative;
 }
 </style>
 <style lang="scss">
+.hidden {
+  display: none;
+}
+div.tooltip {
+  color: #222;
+  background-color: #fff;
+  padding: 0.5em;
+  text-shadow: #f5f5f5 0 1px 0;
+  border-radius: 2px;
+  opacity: 0.9;
+  position: absolute;
+}
 .map-background {
   fill: none;
   pointer-events: all;
