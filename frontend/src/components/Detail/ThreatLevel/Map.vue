@@ -17,7 +17,7 @@ export default {
   methods: {
     renderChart() {
       // Le Chart
-      const width = 800
+      const width = 750
       const height = 500
       let centered
 
@@ -41,7 +41,7 @@ export default {
       // U.S.A. !!!
       const projection = d3
         .geoAlbersUsa()
-        .scale(1070)
+        .scale(850)
         .translate([width / 2, height / 2])
 
       // Path generator for our USA projection. Make GeoJSON coords into paths in SVG
