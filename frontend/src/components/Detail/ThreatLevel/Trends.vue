@@ -22,8 +22,14 @@
         <div class="trend-card">
           <span>{{ threat.threatTitle }}</span>
           <div class="indicator" :class="getBackground(threat.improving)">
-            <!-- <img v-if="threat.improving" src="assets/thumbsUp.svg" />
-            <img v-if="!threat.improving" src="assets/thumbsDown.svg" /> -->
+            <img
+              v-if="threat.improving"
+              src="../../../assets/icon_thumbsup.svg"
+            />
+            <img
+              v-if="!threat.improving"
+              src="../../../assets/icon_thumbsdown.svg"
+            />
           </div>
         </div>
         <div :class="`trend-chart-${index}`" />
