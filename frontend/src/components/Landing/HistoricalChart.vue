@@ -86,23 +86,29 @@ export default {
         .domain([0, d3.max(data, d => d.positiveCases)])
         .range([height, 0])
 
-      const resetTooltip = () => {
+      const mouseover = d => {
         d3.select('.tooltip')
           .transition()
           .duration(200)
-          .style('left', xScale(recentDay.date) - 70 + 'px')
-          .style('top', yScale(recentDay.positiveCases) - 110 + 'px')
           .style('opacity', 1)
-          .style('background', getRiskBackground(recentDay.riskScore))
+          .style('background', getRiskBackground(d.riskScore))
         d3.select('.tooltip-arrow').style(
           'background',
-          getRiskBackground(recentDay.riskScore)
+          getRiskBackground(d.riskScore)
         )
-        d3.select('.date').text(
-          moment(recentDay.date, 'MM-DD-YYYY').format('MMMM Do')
-        )
-        d3.select('.cases').text(recentDay.positiveCases.toLocaleString())
-        d3.select('.risk-level').text(recentDay.riskScore)
+        d3.select('.date').text(moment(d.date, 'MM-DD-YYYY').format('MMMM Do'))
+        d3.select('.cases').text(d.positiveCases.toLocaleString())
+        d3.select('.risk-level').text(d.riskScore)
+      }
+      const mousemove = d => {
+        d3.select('.tooltip')
+          .style('left', xScale(d.date) - 70 + 'px')
+          .style('top', yScale(d.positiveCases) - 110 + 'px')
+      }
+
+      const resetTooltip = () => {
+        mouseover(recentDay)
+        mousemove(recentDay)
       }
 
       resetTooltip()
@@ -158,30 +164,11 @@ export default {
         .attr('height', d => height - yScale(d.positiveCases))
         .attr('stroke', '#FFF')
         .attr('fill', d => getRiskBackground(d.riskScore))
-        .on('mouseover', d => {
-          d3.select('.tooltip')
-            .transition()
-            .duration(200)
-            .style('opacity', 1)
-            .style('background', getRiskBackground(d.riskScore))
-          d3.select('.tooltip-arrow').style(
-            'background',
-            getRiskBackground(d.riskScore)
-          )
-          d3.select('.date').text(
-            moment(d.date, 'MM-DD-YYYY').format('MMMM Do')
-          )
-          d3.select('.cases').text(d.positiveCases.toLocaleString())
-          d3.select('.risk-level').text(d.riskScore)
-        })
+        .on('mouseover', mouseover)
         .on('mouseout', function() {
           resetTooltip()
         })
-        .on('mousemove', d => {
-          d3.select('.tooltip')
-            .style('left', xScale(d.date) - 70 + 'px')
-            .style('top', yScale(d.positiveCases) - 110 + 'px')
-        })
+        .on('mousemove', mousemove)
 
       // DASHED LINES
       svg
