@@ -65,8 +65,7 @@ export default {
           const svg = d3
             .select(`.trend-chart-${index}`)
             .append('svg')
-            .attr('width', width)
-            .attr('height', height)
+            .attr('viewBox', '0 0 300 50')
             .append('g')
 
           const arr = threat.data.map(day => {
