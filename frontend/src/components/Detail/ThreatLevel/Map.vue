@@ -9,9 +9,15 @@ import * as d3 from 'd3'
 export default {
   name: 'Map',
   data() {
-    return {}
+    return {
+      stateData: [
+        { name: 'Maryland', population: 123 },
+        { name: 'Virginia', population: 456 }
+      ]
+    }
   },
-  mounted() {
+  async mounted() {
+    // const data = await getStateData()
     this.renderChart()
   },
   methods: {
@@ -31,13 +37,6 @@ export default {
         .append('div')
         .attr('class', 'hidden tooltip')
 
-      // Add background and add click handler to zoom out
-      svg
-        .append('rect')
-        .attr('class', 'map-background')
-        .attr('width', width)
-        .attr('height', height)
-
       // Append group element
       const g = svg.append('g')
 
@@ -55,6 +54,20 @@ export default {
         'https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json'
       )
         .then(data => {
+          // How we add state level data properties to our geoJson
+          data.features.forEach(stateJson => {
+            this.stateData.forEach(state => {
+              const jsonStateName = stateJson.properties.name
+              const stateDataName = state.name
+
+              if (jsonStateName === stateDataName) {
+                stateJson.properties.population = state.population
+              }
+            })
+          })
+
+          console.log(data)
+
           g.append('g')
             .attr('id', 'states')
             .selectAll('path')
@@ -77,7 +90,7 @@ export default {
                     (mouse[1] - 35) +
                     'px'
                 )
-                .html(d.properties.name)
+                .html([d.properties.name, d.properties.population])
             })
             .on('mouseout', function() {
               tooltip.classed('hidden', true)

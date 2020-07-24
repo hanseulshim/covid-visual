@@ -111,7 +111,6 @@ export default {
           const line = d3
             .line()
             .defined(d => !isNaN(d.value))
-            .curve(d3.curveMonotoneX)
             .x(d => x(d.date))
             .y(d => y(d.value))
 
@@ -136,7 +135,7 @@ export default {
             .y1(function(d) {
               return y(d.value)
             })
-            .curve(d3.curveMonotoneX)
+
           svg
             .append('path')
             .data([arr])
@@ -225,7 +224,11 @@ export default {
   .title {
     flex: 3;
     h2 {
+      font-weight: 300;
       font-size: 1.5em;
+    }
+    h3 {
+      font-weight: 300;
     }
   }
 
@@ -248,6 +251,7 @@ export default {
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      font-weight: 300;
 
       .description {
         text-transform: uppercase;
@@ -255,10 +259,6 @@ export default {
         color: #666;
         margin-bottom: 5px;
         white-space: nowrap;
-      }
-
-      span {
-        font-weight: 500;
       }
     }
   }
