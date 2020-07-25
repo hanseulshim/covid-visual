@@ -7,7 +7,7 @@
           <div>Powered by</div>
           <img alt="boost logo" src="../../assets/logo.png" />
         </div>
-        <HistoricalChartMini />
+        <HistoricalChartMini date="date" @selectedDate="updateDate" />
       </div>
       <ThreatLevel />
       <Footer />
@@ -26,8 +26,12 @@ export default {
     ThreatLevel,
     Footer
   },
+  data() {
+    return {
+      date: ''
+    }
+  },
   mounted() {
-    console.log('sodifjsdf')
     window.moveBy(0, 10)
   },
   methods: {
@@ -36,6 +40,9 @@ export default {
         this.$router.push('/')
       }
       return window.scrollY === 0
+    },
+    updateDate(e) {
+      console.log(e)
     }
   }
 }
@@ -48,6 +55,7 @@ export default {
     height: 150px;
     display: flex;
     padding: 1rem 10rem;
+    padding-top: 2rem;
     box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.1);
     .logo-container {
       padding-right: 2rem;
