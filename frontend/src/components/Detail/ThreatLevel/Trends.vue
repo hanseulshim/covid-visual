@@ -6,7 +6,7 @@
         <h3>Over the past 14 days</h3>
       </div>
       <div class="risk-level">
-        <span class="score">3</span>
+        <span class="score">{{ currentDay.riskScore }}</span>
         <div>
           <span class="description">Risk Level</span>
           <span>{{ dateString }}</span>
@@ -15,24 +15,37 @@
     </div>
     <div class="charts-container">
       <div
-        v-for="(threat, index) in threats"
+        v-for="(trend, index) in trends"
         v-bind:key="index"
         class="trend-container"
       >
         <div class="trend-card">
-          <span>{{ threat.threatTitle }}</span>
-          <div class="indicator" :class="getBackground(threat.improving)">
+          <span>{{ trend.title }}</span>
+          <div class="indicator" :class="getBackground(currentDay[trend.key])">
             <img
-              v-if="threat.improving"
+              v-if="currentDay[trend.key]"
               src="../../../assets/icon_thumbsup.svg"
             />
             <img
-              v-if="!threat.improving"
+              v-if="!currentDay[trend.key]"
               src="../../../assets/icon_thumbsdown.svg"
             />
           </div>
         </div>
-        <div :class="`trend-chart-${index}`" />
+        <svg
+          v-if="
+            trend.key !== 'hospitalAvailability' &&
+              trend.key !== 'healthcareAvailability'
+          "
+          :class="`${trend.key}`"
+        />
+        <div
+          v-if="
+            trend.key === 'hospitalAvailability' ||
+              trend.key === 'healthcareAvailability'
+          "
+          :class="`${trend.key}`"
+        />
       </div>
     </div>
   </div>
@@ -42,7 +55,7 @@
 import * as d3 from 'd3'
 import { getTrendData } from '../../../../api'
 import moment from 'moment'
-import { threats } from './threats'
+import { trends } from './trendsHelper'
 export default {
   name: 'Trends',
   props: {
@@ -52,21 +65,12 @@ export default {
   },
   data() {
     return {
-      trends: [
-        {
-          title: 'Downward trajectory of flu-like symptoms'
-        }
-      ],
       trendList: [],
-      threats
+      currentDay: {},
+      trends: [...trends]
     }
   },
-  async mounted() {
-    this.renderCharts()
-    const today = moment(new Date()).format('MM-DD-YYYY')
-    const data = await getTrendData(today)
-    this.trendList = data.trendList
-  },
+  mounted() {},
   computed: {
     dateString() {
       const selectedDate = this.date ? new Date(this.date) : new Date()
@@ -74,34 +78,39 @@ export default {
     }
   },
   watch: {
-    date: function(newVal) {
-      this.updateTrends(newVal)
+    date: async function(newVal) {
+      const data = await getTrendData(newVal)
+      this.trendList = data.trendList
+      this.currentDay = data.currentDay
+    },
+    trendList: function(newVal) {
+      if (newVal) {
+        this.renderCharts()
+      }
     }
   },
   methods: {
     renderCharts() {
-      this.threats.forEach((threat, index) => {
-        if (threat.data.length) {
+      this.trends.forEach(trend => {
+        d3.select(`.${trend.key} > *`).remove()
+        if (
+          trend.key !== 'hospitalAvailability' &&
+          trend.key !== 'healthcareAvailability'
+        ) {
           const width = 300
           const height = 50
           // Append the SVG object to the body of the page
           const svg = d3
-            .select(`.trend-chart-${index}`)
-            .append('svg')
+            .select(`.${trend.key}`)
             .attr('viewBox', '0 0 300 50')
             .append('g')
 
-          const arr = threat.data.map(day => {
-            return {
-              ...day,
-              date: new Date(day.date)
-            }
-          })
+          const data = [...this.trendList]
 
           // Define and add date axis (X-Axis)
           const x = d3
-            .scaleUtc()
-            .domain(d3.extent(arr, d => d.date))
+            .scaleBand()
+            .domain(data.map(d => d.date))
             .range([0, width])
           svg
             .append('g')
@@ -116,7 +125,7 @@ export default {
           // Define and add Y axis
           const y = d3
             .scaleLinear()
-            .domain([0, d3.max(arr, d => d.value) * 1.1])
+            .domain([0, d3.max(data, d => d[trend.key]) * 1.5])
             .range([height, 0])
           svg
             .append('g')
@@ -127,14 +136,14 @@ export default {
           // Define Line
           const line = d3
             .line()
-            .defined(d => !isNaN(d.value))
+            .defined(d => !isNaN(d[trend.key]))
             .x(d => x(d.date))
-            .y(d => y(d.value))
+            .y(d => y(d[trend.key]))
 
           // Plot line
           svg
             .append('path')
-            .datum(arr)
+            .datum(data)
             .attr('fill', 'none')
             .attr('stroke', '#4a4a4a')
             .attr('stroke-width', 2)
@@ -155,8 +164,8 @@ export default {
 
           svg
             .append('path')
-            .data([arr])
-            .attr('fill', !threat.improving ? '#4a4a4a' : 'none')
+            .data([data])
+            .attr('fill', !this.currentDay[trend.key] ? '#4a4a4a' : 'none')
             .attr('d', area)
 
           // Close shape on right side
@@ -167,7 +176,7 @@ export default {
             .attr('stroke-width', 3)
             .attr('x1', width - 1)
             .attr('x2', width - 1)
-            .attr('y1', y(arr[arr.length - 1].value))
+            .attr('y1', y(data[data.length - 1][trend.key]))
             .attr('y2', height)
 
           // Close shape on left side
@@ -178,10 +187,11 @@ export default {
             .attr('stroke-width', 3)
             .attr('x1', 0)
             .attr('x2', 0)
-            .attr('y1', y(arr[0].value))
+            .attr('y1', y(data[0][trend.key]))
             .attr('y2', height)
         } else {
-          const container = d3.select(`.trend-chart-${index}`)
+          const container = d3.select(`.${trend.key}`)
+          d3.select(`.${trend.key} > *`).remove()
           container.style('display', 'flex').style('width', '100%')
 
           container
@@ -194,10 +204,11 @@ export default {
             .style('text-transform', 'uppercase')
             .style('font-size', '1.5em')
             .style('font-weight', '600')
-            .style('background-color', () => {
-              threat.isTrue ? '#4a4a4a' : ''
-            })
-            .style('color', threat.isTrue ? 'white' : '#666')
+            .style(
+              'background-color',
+              this.currentDay[trend.key] ? '#4a4a4a' : ''
+            )
+            .style('color', this.currentDay[trend.key] ? 'white' : '#666')
             .text(() => {
               return 'Yes'
             })
@@ -212,8 +223,11 @@ export default {
             .style('text-transform', 'uppercase')
             .style('font-size', '1.5em')
             .style('font-weight', '600')
-            .style('background-color', !threat.isTrue ? '#4a4a4a' : '')
-            .style('color', !threat.isTrue ? 'white' : '#666')
+            .style(
+              'background-color',
+              !this.currentDay[trend.key] ? '#4a4a4a' : ''
+            )
+            .style('color', !this.currentDay[trend.key] ? 'white' : '#666')
             .text(() => {
               return 'No'
             })
@@ -222,11 +236,11 @@ export default {
     },
     getBackground(improving) {
       return improving ? 'greenBg' : 'orangeBg'
-    },
-    async updateTrends(date) {
-      const trends = await getTrendData(date)
-      this.trendList = trends.trendList
     }
+    // async updateTrends(date) {
+    //   const trends = await getTrendData(date)
+    //   this.trendList = trends.trendList
+    // }
   }
 }
 </script>

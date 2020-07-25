@@ -50,6 +50,10 @@ export default {
     this.percentDifference = data.percentDifference
     this.relativeMin = data.relativeMin
     this.index = data.countryList.length - 1
+    this.$emit(
+      'selectedDate',
+      data.countryList[data.countryList.length - 1].date
+    )
     this.renderChart()
   },
   computed: {
