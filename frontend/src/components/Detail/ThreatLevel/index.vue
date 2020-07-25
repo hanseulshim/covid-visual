@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <Trends :date="date" />
-    <Map />
+    <Map :date="date" />
   </div>
 </template>
 

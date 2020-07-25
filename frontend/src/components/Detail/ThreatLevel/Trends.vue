@@ -56,6 +56,7 @@ import * as d3 from 'd3'
 import { getTrendData } from '../../../../api'
 import moment from 'moment'
 import { trends } from './trendsHelper'
+import { getRiskBackground } from '../../../utils/risk'
 export default {
   name: 'Trends',
   props: {
@@ -82,6 +83,10 @@ export default {
       const data = await getTrendData(newVal)
       this.trendList = data.trendList
       this.currentDay = data.currentDay
+      d3.select('.score').style(
+        'color',
+        getRiskBackground(this.currentDay.riskScore)
+      )
     },
     trendList: function(newVal) {
       if (newVal) {
@@ -176,7 +181,7 @@ export default {
             .attr('stroke-width', 3)
             .attr('x1', width - 1)
             .attr('x2', width - 1)
-            .attr('y1', y(data[data.length - 1][trend.key]))
+            .attr('y1', y(data[data.length - 3][trend.key]))
             .attr('y2', height)
 
           // Close shape on left side
@@ -237,10 +242,6 @@ export default {
     getBackground(improving) {
       return improving ? 'greenBg' : 'orangeBg'
     }
-    // async updateTrends(date) {
-    //   const trends = await getTrendData(date)
-    //   this.trendList = trends.trendList
-    // }
   }
 }
 </script>
@@ -268,15 +269,14 @@ export default {
   }
 
   .risk-level {
-    border: 2px solid #a59f61;
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: space-around;
     padding: 0.75em 0.5em;
     max-width: 150px;
+    border: 1px solid black;
     .score {
-      color: #a59f61;
       font-weight: 700;
       font-size: 3em;
     }

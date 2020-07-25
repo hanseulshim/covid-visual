@@ -6,19 +6,26 @@
 
 <script>
 import * as d3 from 'd3'
+import { getTrendData } from '../../../../api'
+import { getRiskBackground } from '../../../utils/risk'
 export default {
   name: 'Map',
-  data() {
-    return {
-      stateData: [
-        { name: 'Maryland', population: 123 },
-        { name: 'Virginia', population: 456 }
-      ]
+  props: {
+    date: {
+      type: String
     }
   },
-  async mounted() {
-    // const data = await getStateData()
-    this.renderChart()
+  data() {
+    return {
+      stateData: []
+    }
+  },
+  watch: {
+    date: async function(newVal) {
+      const data = await getTrendData(newVal)
+      this.stateData = data.stateList
+      this.renderChart()
+    }
   },
   methods: {
     renderChart() {
@@ -51,17 +58,18 @@ export default {
 
       // Get the GeoJSON from this random source, map the GeoJSON to svg paths
       d3.json(
-        'https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json'
+        'https://raw.githubusercontent.com/shawnbot/topogram/master/data/us-states.geojson'
       )
         .then(data => {
           // How we add state level data properties to our geoJson
           data.features.forEach(stateJson => {
             this.stateData.forEach(state => {
-              const jsonStateName = stateJson.properties.name
-              const stateDataName = state.name
+              const jsonStateName = stateJson.properties.postal
+              const stateDataName = state.state
 
               if (jsonStateName === stateDataName) {
-                stateJson.properties.population = state.population
+                stateJson.properties.positiveCases = state.positiveCases
+                stateJson.properties.riskScore = state.riskScore
               }
             })
           })
@@ -88,10 +96,12 @@ export default {
                     (mouse[1] - 35) +
                     'px'
                 )
+                .style('background', getRiskBackground(d.properties.riskScore))
                 // .html([d.properties.name, d.properties.population])
                 .html(
                   `<p class='state-name'>${d.properties.name}</p>
-                  <p>Population: ${d.properties.population}</p>`
+                  <p>Cases: ${d.properties.positiveCases.toLocaleString()}</p>
+                  <p>Risk Level: ${d.properties.riskScore}</p>`
                 )
             })
             .on('mouseout', function() {
@@ -104,24 +114,11 @@ export default {
             .attr('d', path)
 
           // Mock safety level data. Randomly assign state colors
-          g.selectAll('path').attr('fill', () => {
-            const safetyLevel = parseInt((Math.random() * 6).toFixed(1))
-
-            return safetyLevel <= 0.5
-              ? '#49c7b0'
-              : safetyLevel > 0.5 && safetyLevel <= 1.5
-              ? '#68ba96'
-              : safetyLevel > 1.5 && safetyLevel <= 2.5
-              ? '#86ad7c'
-              : safetyLevel > 2.5 && safetyLevel <= 3.5
-              ? '#a59f61'
-              : safetyLevel > 3.5 && safetyLevel <= 4.5
-              ? '#c39247'
-              : safetyLevel > 4.5 && safetyLevel <= 5.5
-              ? '#E1852D'
-              : safetyLevel > 5.5 && safetyLevel <= 6
-              ? '#FF7813'
-              : null
+          g.selectAll('path').attr('fill', d => {
+            if (d.properties) {
+              const score = d.properties.riskScore
+              return getRiskBackground(score)
+            }
           })
         })
         .catch(error => console.error(error))
@@ -146,7 +143,6 @@ div.tooltip {
   position: absolute;
   font-size: 0.75rem;
   padding: 5px 10px;
-  background: rgba(43, 43, 43, 0.8);
   color: #fff;
   border-radius: 2px;
   p {
