@@ -40,25 +40,42 @@
 
 <script>
 import * as d3 from 'd3'
+import { getTrendData } from '../../../../api'
+import moment from 'moment'
 import { threats } from './threats'
 export default {
   name: 'Trends',
-  data() {
-    return {
-      threats: [...threats]
+  props: {
+    date: {
+      type: String
     }
   },
-  mounted() {
+  data() {
+    return {
+      trends: [
+        {
+          title: 'Downward trajectory of flu-like symptoms'
+        }
+      ],
+      trendList: [],
+      threats
+    }
+  },
+  async mounted() {
     this.renderCharts()
+    const today = moment(new Date()).format('MM-DD-YYYY')
+    const data = await getTrendData(today)
+    this.trendList = data.trendList
   },
   computed: {
-    dateString: () => {
-      const date = new Date()
-      const month = new Intl.DateTimeFormat('en', { month: 'long' }).format(
-        date
-      )
-      const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date)
-      return `${month} ${day}`
+    dateString() {
+      const selectedDate = this.date ? new Date(this.date) : new Date()
+      return moment(selectedDate).format('MMMM DD')
+    }
+  },
+  watch: {
+    date: function(newVal) {
+      this.updateTrends(newVal)
     }
   },
   methods: {
@@ -205,6 +222,10 @@ export default {
     },
     getBackground(improving) {
       return improving ? 'greenBg' : 'orangeBg'
+    },
+    async updateTrends(date) {
+      const trends = await getTrendData(date)
+      this.trendList = trends.trendList
     }
   }
 }

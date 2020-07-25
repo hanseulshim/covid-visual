@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <Trends />
+    <Trends :date="date" />
     <Map />
   </div>
 </template>
@@ -10,6 +10,11 @@ import Trends from './Trends'
 import Map from './Map'
 export default {
   name: 'ThreatLevel',
+  props: {
+    date: {
+      type: String
+    }
+  },
   components: {
     Trends,
     Map

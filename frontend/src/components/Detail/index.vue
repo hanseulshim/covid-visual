@@ -9,7 +9,7 @@
         </div>
         <HistoricalChartMini date="date" @selectedDate="updateDate" />
       </div>
-      <ThreatLevel />
+      <ThreatLevel :date="date" />
       <Footer />
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
       return window.scrollY === 0
     },
     updateDate(e) {
-      console.log(e)
+      this.date = e
     }
   }
 }
