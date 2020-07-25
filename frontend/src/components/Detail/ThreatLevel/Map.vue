@@ -66,8 +66,6 @@ export default {
             })
           })
 
-          console.log(data)
-
           g.append('g')
             .attr('id', 'states')
             .selectAll('path')
@@ -90,7 +88,11 @@ export default {
                     (mouse[1] - 35) +
                     'px'
                 )
-                .html([d.properties.name, d.properties.population])
+                // .html([d.properties.name, d.properties.population])
+                .html(
+                  `<p class='state-name'>${d.properties.name}</p>
+                  <p>Population: ${d.properties.population}</p>`
+                )
             })
             .on('mouseout', function() {
               tooltip.classed('hidden', true)
@@ -139,13 +141,22 @@ export default {
   display: none;
 }
 div.tooltip {
-  color: #222;
-  background-color: #fff;
-  padding: 0.5em;
   text-shadow: #f5f5f5 0 1px 0;
-  border-radius: 2px;
   opacity: 0.9;
   position: absolute;
+  font-size: 0.75rem;
+  padding: 5px 10px;
+  background: rgba(43, 43, 43, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  p {
+    margin: 0;
+    margin-bottom: 5px;
+  }
+
+  .state-name {
+    font-size: 1rem;
+  }
 }
 .map-background {
   fill: none;
