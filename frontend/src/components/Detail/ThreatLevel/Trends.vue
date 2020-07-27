@@ -129,7 +129,7 @@ export default {
           // Define and add Y axis
           const y = d3
             .scaleLinear()
-            .domain([0, d3.max(data, d => d[trend.key]) * 1.5])
+            .domain([0, d3.max(data, d => d[trend.key]) * 1.75])
             .range([height, 0])
           svg
             .append('g')
@@ -175,8 +175,8 @@ export default {
             .attr('fill', 'none')
             .attr('stroke', '#4a4a4a')
             .attr('stroke-width', 3)
-            .attr('x1', width - 1)
-            .attr('x2', width - 1)
+            .attr('x1', x(data[data.length - 1].date))
+            .attr('x2', x(data[data.length - 1].date))
             .attr('y1', y(data[data.length - 1][trend.key]))
             .attr('y2', height)
 
