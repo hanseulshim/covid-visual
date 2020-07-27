@@ -3,12 +3,13 @@
     <div class="container">
       <div>Powered by</div>
       <img alt="boost logo" src="../../assets/logo.png" />
-      <div class="title">COVID State of States</div>
+      <div class="title">Are States Ready to Reopen?</div>
       <div class="description">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Risus
-        condimentum nisl quam ac enim. Tempus nunc odio at consectetur ornare.
-        Odio morbi et turpis convallis augue pellentesque lorem. Varius
-        convallis aenean aliquam commodo, neque justo.
+        In the early months of the 2020 Covid-19 pandemic, the Centers for
+        Disease Control & Prevention (CDC) outlined criteria for states to
+        consider before reopening. These 6 criteria determine the threat level
+        within a state. The CDC recommended that states should only reopen if
+        all 6 criteria were met. Click here to read more about these criteria.
       </div>
       <div class="risk">RISK LEVEL</div>
       <div class="bar" />
