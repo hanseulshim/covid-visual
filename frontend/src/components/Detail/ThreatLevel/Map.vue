@@ -97,7 +97,6 @@ export default {
                     'px'
                 )
                 .style('background', getRiskBackground(d.properties.riskScore))
-                // .html([d.properties.name, d.properties.population])
                 .html(
                   `<p class='state-name'>${d.properties.name}</p>
                   <p>Cases: ${d.properties.positiveCases.toLocaleString()}</p>
@@ -113,7 +112,6 @@ export default {
             .attr('id', 'state-borders')
             .attr('d', path)
 
-          // Mock safety level data. Randomly assign state colors
           g.selectAll('path').attr('fill', d => {
             if (d.properties) {
               const score = d.properties.riskScore
