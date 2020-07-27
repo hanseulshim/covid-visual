@@ -65,8 +65,8 @@ export default {
   }
   .description {
     text-align: center;
-    width: 50rem;
-    line-height: 2.5rem;
+    width: 40rem;
+    line-height: 2rem;
     align-self: center;
   }
   .risk {

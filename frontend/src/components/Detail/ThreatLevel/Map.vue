@@ -31,7 +31,7 @@ export default {
     renderChart() {
       // Le Chart
       const width = 750
-      const height = 500
+      const height = 550
 
       // Size our SVG
       const svg = d3
@@ -42,7 +42,7 @@ export default {
       const tooltip = d3
         .select('.map-container')
         .append('div')
-        .attr('class', 'hidden tooltip')
+        .attr('class', 'hidden map-tooltip')
 
       // Append group element
       const g = svg.append('g')
@@ -97,6 +97,7 @@ export default {
                     'px'
                 )
                 .style('background', getRiskBackground(d.properties.riskScore))
+
                 .html(
                   `<p class='state-name'>${d.properties.name}</p>
                   <p>Cases: ${d.properties.positiveCases.toLocaleString()}</p>
@@ -135,7 +136,7 @@ export default {
 .hidden {
   display: none;
 }
-div.tooltip {
+div.map-tooltip {
   text-shadow: #f5f5f5 0 1px 0;
   opacity: 0.9;
   position: absolute;
@@ -143,6 +144,7 @@ div.tooltip {
   padding: 5px 10px;
   color: #fff;
   border-radius: 2px;
+  box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 0.3);
   p {
     margin: 0;
     margin-bottom: 5px;

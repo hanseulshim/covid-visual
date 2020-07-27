@@ -16,6 +16,7 @@
       <div class="tooltip-arrow" />
     </div>
     <svg class="chart" />
+    <span class="explore">Explore the Data</span>
     <router-link :to="'detail'">
       <svg
         class="next-icon"
@@ -218,6 +219,7 @@ export default {
 <style lang="scss" scoped>
 .main {
   margin-top: 2rem;
+  padding-bottom: 1rem;
   height: 100%;
   max-height: 600px;
   position: relative;
@@ -225,9 +227,13 @@ export default {
   flex-direction: column;
   align-items: center;
 
+  .explore {
+    margin-bottom: 5px;
+  }
+
   .next-icon {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
   }
 
