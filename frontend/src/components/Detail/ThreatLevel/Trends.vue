@@ -71,7 +71,6 @@ export default {
       trends: [...trends]
     }
   },
-  mounted() {},
   computed: {
     dateString() {
       const selectedDate = this.date ? new Date(this.date) : new Date()
@@ -104,7 +103,7 @@ export default {
         ) {
           const width = 300
           const height = 50
-          // Append the SVG object to the body of the page
+
           const svg = d3
             .select(`.${trend.key}`)
             .attr('viewBox', '0 0 300 50')
@@ -159,19 +158,16 @@ export default {
           // Define the area and append it
           const area = d3
             .area()
-            .x(function(d) {
-              return x(d.date)
-            })
+            .x(d => x(d.date))
             .y0(height)
-            .y1(function(d) {
-              return y(d.value)
-            })
+            .y1(d => y(d[trend.key]))
 
           svg
             .append('path')
             .data([data])
-            .attr('fill', !this.currentDay[trend.key] ? '#4a4a4a' : 'none')
             .attr('d', area)
+            .attr('id', 'area-path')
+            .attr('fill', this.currentDay[trend.key] ? 'none' : '#4a4a4a')
 
           // Close shape on right side
           svg
@@ -181,7 +177,7 @@ export default {
             .attr('stroke-width', 3)
             .attr('x1', width - 1)
             .attr('x2', width - 1)
-            .attr('y1', y(data[data.length - 3][trend.key]))
+            .attr('y1', y(data[data.length - 1][trend.key]))
             .attr('y2', height)
 
           // Close shape on left side
