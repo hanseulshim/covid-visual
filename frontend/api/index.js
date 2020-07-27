@@ -10,3 +10,12 @@ export const getCountryData = async () => {
     console.log(error)
   }
 }
+
+export const getTrendData = async date => {
+  try {
+    const result = await axios.post(`${URL}/country/trend`, { date })
+    return result.data
+  } catch (error) {
+    console.log(error)
+  }
+}

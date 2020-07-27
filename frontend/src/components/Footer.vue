@@ -1,10 +1,6 @@
 <template>
   <div class="footer">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique
-    ornare sem, eu condimentum justo. Donec at ex vitae quam vestibulum
-    malesuada at vel mauris. Morbi a placerat eros. Nunc convallis pellentesque
-    nisl vel dignissim. Morbi eleifend massa non aliquet fringilla. Ut
-    scelerisque eros ligula, eget aliquam augue maximus at.
+    Data sources include John’s Hopkins University, U.S. Census Bureau.
   </div>
 </template>
 
